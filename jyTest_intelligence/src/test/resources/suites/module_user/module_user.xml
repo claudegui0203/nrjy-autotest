@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="User:User">
+    <parameter name="LOCAL_CONFIG_FILE" value="TAConfiguration.conf"/>
+    <test verbose="2" name="User">
+        <classes>
+            <class name="com.nari.jydw.jytest.interfacetest.user.CaseUser"/>
+            <class name="com.nari.jydw.jytest.interfacetest.user.CaseCheckUserPassword"/>
+        </classes>
+    </test>
+    <listeners>
+        <listener class-name="com.nari.jydw.jytest.common.ExtentTestNGIReporterListener"></listener>
+    </listeners>
+</suite>
