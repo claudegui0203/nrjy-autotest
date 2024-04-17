@@ -19,9 +19,9 @@ public class CaseUser extends UserBusiness {
         Response response = (Response) RestAssured.
         given().log().all()
                 .header("Content-Type", "application/json; charset=utf-8").header("token", getToken())
-                .param("pageNum", 1).param("pageSize", 25).param("search", "5YzMiCE0VlEKKmc").
+                .param("pageNum", 1).param("pageSize", 25).param("search", this.getRegister().getUsername()).
         when()
-                .get(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.QUERYUSER.getApi()).
+                .get(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.SEARCH.getApi()).
         then()
                 .log().body()
                 .statusCode(200)
@@ -36,7 +36,7 @@ public class CaseUser extends UserBusiness {
     public void checkUserName() {
         given().log().all()
                 .header("Content-Type", "application/json; charset=utf-8").header("token", getToken())
-                .param("username", "5YzMiCE0VlEKKmc").
+                .param("username", this.getRegister().getUsername()).
         when()
                 .get(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.CHECKUSERNAME.getApi()).
         then()
@@ -49,7 +49,7 @@ public class CaseUser extends UserBusiness {
     public void checkUserNameWhenUpdate() {
         given().log().all()
                 .header("Content-Type", "application/json; charset=utf-8").header("token", getToken())
-                .param("username", "5YzMiCE0VlEKKmc").param("userId", this.getUserId()).
+                .param("username", this.getRegister().getUsername()).param("userId", this.getUserId()).
         when()
                 .get(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.UPDATECHECKUSERNAME.getApi()).
         then()
@@ -72,7 +72,7 @@ public class CaseUser extends UserBusiness {
 
     @Test
     public void updatePassword() {
-        String password = generateString(0);
+        String password = randomGenerateSpecialCharacters(0);
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", this.getUserId());
         userInfo.put("password", this.getRegister().getPassword());

@@ -24,7 +24,7 @@ public class CaseCheckUserPassword extends UserBusiness {
     public void UserNotExistAndPasswordIncorrect() {
         given().log().all()
                 .header("Content-Type", "application/x-www-form-urlencoded; charset=utf-8").header("token", getToken())
-                .formParam("id", 65535).formParam("password", this.generateString(0)).
+                .formParam("id", 65535).formParam("password", this.randomGenerateSpecialCharacters(0)).
         when()
                 .post(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.CHECKPASSWD.getApi()).
         then()
@@ -36,7 +36,7 @@ public class CaseCheckUserPassword extends UserBusiness {
     public void passwordIncorrect() {
         given().log().all()
                 .header("Content-Type", "application/x-www-form-urlencoded; charset=utf-8").header("token", getToken())
-                .formParam("id", this.getUserId()).formParam("password", this.generateString(0)).
+                .formParam("id", this.getUserId()).formParam("password", this.randomGenerateSpecialCharacters(0)).
         when()
                 .post(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.CHECKPASSWD.getApi()).
         then()
@@ -96,7 +96,7 @@ public class CaseCheckUserPassword extends UserBusiness {
     public void passwordSizeBiggerThan128() {
         given().log().all()
                 .header("Content-Type", "application/x-www-form-urlencoded; charset=utf-8").header("token", getToken())
-                .formParam("id", this.getUserId()).formParam("password", this.generateString(128)).
+                .formParam("id", this.getUserId()).formParam("password", this.randomGenerateSpecialCharacters(128)).
         when()
                 .post(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.CHECKPASSWD.getApi()).
         then()
@@ -132,6 +132,42 @@ public class CaseCheckUserPassword extends UserBusiness {
     public void noAnyParameter() {
         given().log().all()
                 .header("Content-Type", "application/x-www-form-urlencoded; charset=utf-8").header("token", getToken()).
+        when()
+                .post(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.CHECKPASSWD.getApi()).
+        then()
+                .log().body().statusCode(400)
+                .body("status", is(400)).body("error", is("Bad Request"));
+    }
+
+    @Test
+    public void idFieldIncorrect() {
+        given().log().all()
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=utf-8").header("token", getToken())
+                .formParam("userId", this.getUserId()).formParam("password", this.getRegister().getPassword()).
+        when()
+                .post(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.CHECKPASSWD.getApi()).
+        then()
+                .log().body().statusCode(400)
+                .body("status", is(400)).body("error", is("Bad Request"));
+    }
+
+    @Test
+    public void passwordFieldIncorrect() {
+        given().log().all()
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=utf-8").header("token", getToken())
+                .formParam("id", this.getUserId()).formParam("pwd", this.getRegister().getPassword()).
+        when()
+                .post(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.CHECKPASSWD.getApi()).
+        then()
+                .log().body().statusCode(400)
+                .body("status", is(400)).body("error", is("Bad Request"));
+    }
+
+    @Test
+    public void allFieldIncorrect() {
+        given().log().all()
+                .header("Content-Type", "application/x-www-form-urlencoded; charset=utf-8").header("token", getToken())
+                .formParam("userId", this.getUserId()).formParam("pwd", this.getRegister().getPassword()).
         when()
                 .post(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.CHECKPASSWD.getApi()).
         then()

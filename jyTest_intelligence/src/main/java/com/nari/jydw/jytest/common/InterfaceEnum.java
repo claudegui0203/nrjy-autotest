@@ -13,7 +13,7 @@ public enum InterfaceEnum {
     UPDATEUSER("/api/user/update"),
     CHECKUSERNAME("/api/user/checkName"),
     UPDATECHECKUSERNAME("/api/user/upCheckName"),
-    QUERYUSER("/api/user/list"),
+    SEARCH("/api/user/list"),
     UPDATEUSERINFO("/api/user/update"),
     CHECKPASSWD("/api/user/checkPwd"),
     UPDATEPASSWORD("/api/user/upPwd"),

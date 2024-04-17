@@ -14,7 +14,7 @@ public class CaseUpdatePassword extends UserBusiness {
 
     @Test
     public void updatePassword() {
-        String password = generateString(128);
+        String password = randomGenerateSpecialCharacters(128);
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", this.getUserId());
         userInfo.put("password", this.getRegister().getPassword());
@@ -47,9 +47,8 @@ public class CaseUpdatePassword extends UserBusiness {
                 .put(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.UPDATEPASSWORD.getApi()).
         then()
                 .log().body().statusCode(200)
-                .body("code", is(200)).body("msg", is("密码修改成功"));
+                .body("code", is(500)).body("msg", is("缺少必要参数"));
 
-        this.getRegister().setPassword("");
         verifyUserPassword();
     }
 
@@ -67,14 +66,14 @@ public class CaseUpdatePassword extends UserBusiness {
                 .put(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.UPDATEPASSWORD.getApi()).
         then()
                 .log().body().statusCode(200)
-                .body("code", is(500)).body("msg", is("密码错误"));
+                .body("code", is(500)).body("msg", is("缺少必要参数"));
 
         verifyUserPassword();
     }
 
     @Test
     public void userNotExist() {
-        String password = generateString(0);
+        String password = randomGenerateSpecialCharacters(0);
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", 65535);
         userInfo.put("password", this.getRegister().getPassword());
@@ -86,9 +85,8 @@ public class CaseUpdatePassword extends UserBusiness {
         when()
                 .put(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.UPDATEPASSWORD.getApi()).
         then()
-                .log().body()
-                .statusCode(200)
-                .body("code", is(200)).body("msg", is("密码修改成功"));
+                .log().body().statusCode(200)
+                .body("code", is(500)).body("msg", is("当前用户不存在"));
 
         verifyUserPassword();
     }
@@ -97,8 +95,8 @@ public class CaseUpdatePassword extends UserBusiness {
     public void userNotExistAndPasswordIncorrect() {
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", 65535);
-        userInfo.put("password", generateString(0));
-        userInfo.put("newPassword", generateString(128));
+        userInfo.put("password", randomGenerateSpecialCharacters(0));
+        userInfo.put("newPassword", randomGenerateSpecialCharacters(128));
 
         given().log().all()
                 .header("Content-Type", "application/json; charset=utf-8").header("token", getToken())
@@ -108,7 +106,7 @@ public class CaseUpdatePassword extends UserBusiness {
         then()
                 .log().body()
                 .statusCode(200)
-                .body("code", is(200)).body("msg", is("密码修改成功"));
+                .body("code", is(500)).body("msg", is("当前用户不存在"));
 
         verifyUserPassword();
     }
@@ -117,8 +115,8 @@ public class CaseUpdatePassword extends UserBusiness {
     public void passwordIncorrect() {
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", this.getUserId());
-        userInfo.put("password", generateString(0));
-        userInfo.put("newPassword", generateString(0));
+        userInfo.put("password", randomGenerateSpecialCharacters(0));
+        userInfo.put("newPassword", randomGenerateSpecialCharacters(0));
 
         given().log().all()
                 .header("Content-Type", "application/json; charset=utf-8").header("token", getToken())
@@ -136,7 +134,7 @@ public class CaseUpdatePassword extends UserBusiness {
     public void noIdParameter() {
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("password", this.getRegister().getPassword());
-        userInfo.put("newPassword", generateString(0));
+        userInfo.put("newPassword", randomGenerateSpecialCharacters(0));
 
         given().log().all()
                 .header("Content-Type", "application/json; charset=utf-8").header("token", getToken())
@@ -145,7 +143,7 @@ public class CaseUpdatePassword extends UserBusiness {
                 .put(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.UPDATEPASSWORD.getApi()).
         then()
                 .log().body().statusCode(200)
-                .body("code", is(200)).body("msg", is("密码修改成功"));
+                .body("code", is(500)).body("msg", is("缺少必要参数"));
 
         verifyUserPassword();
     }
@@ -154,7 +152,7 @@ public class CaseUpdatePassword extends UserBusiness {
     public void noPasswordParameter() {
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", this.getUserId());
-        userInfo.put("newPassword", this.generateString(0));
+        userInfo.put("newPassword", this.randomGenerateSpecialCharacters(0));
 
         given().log().all()
                 .header("Content-Type", "application/json; charset=utf-8").header("token", getToken())
@@ -162,9 +160,8 @@ public class CaseUpdatePassword extends UserBusiness {
         when()
                 .put(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.UPDATEPASSWORD.getApi()).
         then()
-                .log().body()
-                .statusCode(200)
-                .body("code", is(200)).body("msg", is("密码修改成功"));
+                .log().body().statusCode(200)
+                .body("code", is(500)).body("msg", is("缺少必要参数"));
 
         verifyUserPassword();
     }
@@ -173,7 +170,7 @@ public class CaseUpdatePassword extends UserBusiness {
     public void noNewPasswordParameterWithCorrectPassword() {
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", this.getUserId());
-        userInfo.put("password", this.generateString(0));
+        userInfo.put("password", this.randomGenerateSpecialCharacters(0));
 
         given().log().all()
                 .header("Content-Type", "application/json; charset=utf-8").header("token", getToken())
@@ -181,20 +178,18 @@ public class CaseUpdatePassword extends UserBusiness {
         when()
                 .put(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.UPDATEPASSWORD.getApi()).
         then()
-                .log().body()
-                .statusCode(200)
-                .body("code", is(500)).body("msg", is("密码错误"));
+                .log().body().statusCode(200)
+                .body("code", is(500)).body("msg", is("缺少必要参数"));
 
         verifyUserPassword();
     }
 
     @Test
     public void noNewPasswordParameter() {
-        String password = generateString(0);
+        String password = randomGenerateSpecialCharacters(0);
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", this.getUserId());
         userInfo.put("password", this.getRegister().getPassword());
-        userInfo.put("newPassword", password);
 
         given().log().all()
                 .header("Content-Type", "application/json; charset=utf-8").header("token", getToken())
@@ -204,7 +199,7 @@ public class CaseUpdatePassword extends UserBusiness {
         then()
                 .log().body()
                 .statusCode(200)
-                .body("code", is(200)).body("msg", is("密码修改成功"));
+                .body("code", is(500)).body("msg", is("缺少必要参数"));
 
         verifyUserPassword();
     }
@@ -214,7 +209,7 @@ public class CaseUpdatePassword extends UserBusiness {
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", this.getUserId());
         userInfo.put("password", this.getRegister().getPassword());
-        userInfo.put("newPassword", this.generateString(0));
+        userInfo.put("newPassword", this.randomGenerateSpecialCharacters(0));
 
         given().log().all()
                 .header("Content-Type", "application/json; charset=utf-8")
@@ -222,9 +217,8 @@ public class CaseUpdatePassword extends UserBusiness {
         when()
                 .put(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.UPDATEPASSWORD.getApi()).
         then()
-                .log().body()
-                .statusCode(401);
-//                .body("code", is(500)).body("msg", is("密码错误"));
+                .log().body().statusCode(401)
+                .body("error", is("Unauthorized")).body("message", is("当前token为空"));
 
         verifyUserPassword();
     }
@@ -234,7 +228,7 @@ public class CaseUpdatePassword extends UserBusiness {
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("userId", this.getUserId());
         userInfo.put("password", this.getRegister().getPassword());
-        userInfo.put("newPassword", this.generateString(0));
+        userInfo.put("newPassword", this.randomGenerateSpecialCharacters(0));
 
         given().log().all()
                 .header("Content-Type", "application/json; charset=utf-8").header("token", getToken())
@@ -242,9 +236,8 @@ public class CaseUpdatePassword extends UserBusiness {
         when()
                 .put(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.UPDATEPASSWORD.getApi()).
         then()
-                .log().body()
-                .statusCode(400);
-//                .body("code", is(500)).body("msg", is("密码错误"));
+                .log().body().statusCode(200)
+                .body("code", is(500)).body("msg", is("缺少必要参数"));
 
         verifyUserPassword();
     }
@@ -254,7 +247,7 @@ public class CaseUpdatePassword extends UserBusiness {
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("userId", this.getUserId());
         userInfo.put("passwd", this.getRegister().getPassword());
-        userInfo.put("newPassword", this.generateString(0));
+        userInfo.put("newPassword", this.randomGenerateSpecialCharacters(0));
 
         given().log().all()
                 .header("Content-Type", "application/json; charset=utf-8").header("token", getToken())
@@ -262,9 +255,8 @@ public class CaseUpdatePassword extends UserBusiness {
         when()
                 .put(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.UPDATEPASSWORD.getApi()).
         then()
-                .log().body()
-                .statusCode(400);
-//                .body("code", is(500)).body("msg", is("密码错误"));
+                .log().body().statusCode(200)
+                .body("code", is(500)).body("msg", is("缺少必要参数"));
 
         verifyUserPassword();
     }
@@ -274,7 +266,7 @@ public class CaseUpdatePassword extends UserBusiness {
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("userId", this.getUserId());
         userInfo.put("password", this.getRegister().getPassword());
-        userInfo.put("newPasswd", this.generateString(0));
+        userInfo.put("newPasswd", this.randomGenerateSpecialCharacters(0));
 
         given().log().all()
                 .header("Content-Type", "application/json; charset=utf-8").header("token", getToken())
@@ -282,9 +274,8 @@ public class CaseUpdatePassword extends UserBusiness {
         when()
                 .put(TestParametersUtil.getInstance().getTestParameters().getSiteUrl() + InterfaceEnum.UPDATEPASSWORD.getApi()).
         then()
-                .log().body()
-                .statusCode(400);
-//                .body("code", is(500)).body("msg", is("密码错误"));
+                .log().body().statusCode(200)
+                .body("code", is(500)).body("msg", is("缺少必要参数"));
 
         verifyUserPassword();
     }
